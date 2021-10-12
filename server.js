@@ -1,14 +1,14 @@
-'use-strict';
+'use strict';
 //Boilerplate
 require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-const request = require('express');
-const weatherData = require('./data/weather.json');
+// const request = require('express');
+const weather = require('./data/weather.json');
 
 const PORT = process.env.PORT || 3001;
-const app = 'express';
+const app = express();
 app.use(cors());
 
 
@@ -16,52 +16,47 @@ app.use(cors());
 
 
 app.get('/', (request, response) => {
-  response.send('Greetings from the server');
+  response.status(200).send('Greetings from the server');
 });
 
 
 
 
-class Forecast {
-  constructor(date, description) {
-    this.date = date;
-    this.description = description;
-  }
-}
+
 
 
 app.get('/weather', getWeather);
 
 
 function getWeather(request, response){
+  // console.log('query params:', request.query);
 
-  let lat = request.query.lat;
-  let lon = request.query.lon;
-  let searchQuery = request.query.cityName;
-  let newWeatherArr = [];
+  let { lat, lon, searchQuery } = request.query;
 
-  weatherData.find(element => {
-    if (element.city_name === searchQuery){
-      let date = element.data.map(day => day.datetime);
-      let description = element.data.map(day => day.weather.description);
-      newWeatherArr.push(new Forecast(date, description));
-    }
-  });
-  if (newWeatherArr.length > 0) {
-    response.status(200).send(newWeatherArr);
+  let foundCity = weather.find(element => element.city_name === searchQuery);
+
+
+
+  try {
+    const weatherArray = foundCity.data.map(day => new Forecast(day));
+
+    console.log(weatherArray);
+    response.status(200).send(weatherArray);
   }
-  else {
-    response.status(500).send('Error!');
+  catch (error) {
+    response.status(404).send('Unable to locate this city!');
   }
-
 }
 
 
 
 
-
-
-
+class Forecast {
+  constructor(day) {
+    this.date = day.valid_date;
+    this.description = `Low of ${day.low_temp}, high of ${day.max_temp} with ${day.weather.description}`;
+  }
+}
 
 
 
@@ -73,5 +68,29 @@ app.get('*', (request, response) => {
 });
 
 
-
+// Listen on the PORT for requests from the 
 app.listen(PORT, () => console.log(`Listening on PORT ${PORT}`));
+
+
+
+
+
+
+// Previous Code
+
+
+//   weatherData.find(element => {
+//     if (element.city_name.toLowerCase() === searchQuery.toLowerCase()){
+//       let date = element.data.map(day => day.datetime);
+//       let description = element.data.map(day => day.weather.description);
+//       newWeatherArr.push(new Forecast(date, description));
+//     }
+//   });
+//   if (newWeatherArr.length > 0) {
+//     response.status(200).send(newWeatherArr);
+//   }
+//   else {
+//     response.status(500).send('Error!');
+//   }
+
+// }
