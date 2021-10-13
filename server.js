@@ -29,18 +29,16 @@ app.get('/weather', getWeather);
 
 
 function getWeather(request, response){
-  // console.log('query params:', request.query);
+
 
   let { lat, lon, searchQuery } = request.query;
 
   let foundCity = weather.find(element => element.city_name === searchQuery);
 
 
-
   try {
     const weatherArray = foundCity.data.map(day => new Forecast(day));
 
-    console.log(weatherArray);
     response.status(200).send(weatherArray);
   }
   catch (error) {
