@@ -4,8 +4,9 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const axios = require('axios');
+
 // const request = require('express');
-const weather = require('./data/weather.json');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -21,28 +22,33 @@ app.get('/', (request, response) => {
 
 
 
-
-
-
-
 app.get('/weather', getWeather);
 
 
-function getWeather(request, response){
+async function getWeather(request, response){
 
+  // -- Current Date Function Goes Here -- //
 
-  let { lat, lon, searchQuery } = request.query;
+  let { lat, lon} = request.query;
+  console.log(request.query);
+  let weatherURL = `https://api.weatherbit.io/v2.0/history/daily?lat=${lat}&lon=${lon}&start_date=2021-10-10&end_date=2021-10-13&key=${process.env.WEATHER_API_KEY}`;
 
-  let foundCity = weather.find(element => element.city_name === searchQuery);
 
 
   try {
-    const weatherArray = foundCity.data.map(day => new Forecast(day));
+    let getWeather =  await axios.get(weatherURL);
 
+
+    const weatherArray = getWeather.data.data.map(day => new Forecast(day));
+
+    // console.log(getWeather.data);
+    console.log(weatherArray);
     response.status(200).send(weatherArray);
+    // response.status(200).send(weatherArray);
+
   }
   catch (error) {
-    response.status(404).send('Unable to locate this city!');
+    response.status(404).send('Unable to access weather data!');
   }
 }
 
@@ -51,8 +57,8 @@ function getWeather(request, response){
 
 class Forecast {
   constructor(day) {
-    this.date = day.valid_date;
-    this.description = `Low of ${day.low_temp}, high of ${day.max_temp} with ${day.weather.description}`;
+    this.date = day.datetime;
+    this.description = `Low of ${day.min_temp}, high of ${day.max_temp}`;
   }
 }
 
