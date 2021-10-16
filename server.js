@@ -33,8 +33,7 @@ async function getWeather(request, response){
 
   let { lat, lon} = request.query;
   console.log(request.query);
-  let weatherURL = `https://api.weatherbit.io/v2.0/history/daily?lat=${lat}&lon=${lon}&start_date=2021-10-10&end_date=2021-10-13&key=${process.env.WEATHER_API_KEY}`;
-
+  let weatherURL = `https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&days=3&key=${process.env.WEATHER_API_KEY}`;
 
 
   try {
@@ -87,9 +86,7 @@ class Film {
     this.overview= element.overview;
     this.averageVotes= element.vote_average;
     this.totalVotes= element.vote_count;
-    // this.imageURL= 'https://image.tmdb.org/t/p/original' + element.poster.path;
-    // { ? this.imageURL=`https://image.tmdb.org/t/p/w500${element.poster.path}` : this.imageURL='';}
-    // this.imageURL= 'https://image.tmdb.org/t/p/w500/' + element.poster.path;
+    this.imageURL= 'https://image.tmdb.org/t/p/original' + element.poster_path;
     this.popularity= element.popularity;
     this.releasedOn= element.release_date;
   }
