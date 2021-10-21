@@ -2,6 +2,7 @@
 //Boilerplate
 require('dotenv').config();
 
+let cache = require('./modules/cache.js');
 const express = require('express');
 const cors = require('cors');
 
