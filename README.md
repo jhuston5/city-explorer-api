@@ -24,6 +24,10 @@ Movie Feature
 Fully Functioning Back End
 10.16.21 - Image rendering
 
+Cache
+10.20.21 - Set the cache to store memory locally
+I thought this would take significantly longer than it did. Expectation was that it would take 2 hours and it took less than 1.
+
 ## Credit and Collaborations
 
 Resources: Weatherbit API
@@ -31,4 +35,4 @@ The Movie Database API
 
 ### WRRC Model
 
- ![WRRC API](/images/WRRC-API.png)
+ ![WRRC API](/images/WRRC_cache.png)
